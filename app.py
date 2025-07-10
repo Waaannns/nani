@@ -1,9 +1,14 @@
 from flask import Flask, render_template, request
 import requests, re
 from bs4 import BeautifulSoup
+from config import config
 
 app = Flask(__name__)
 
+# Load configuration
+config_name = os.environ.get('FLASK_CONFIG') or 'default'
+app.config.from_object(config[config_name])
+config[config_name].init_app(app)
 
 class OtakudesuApi:
     def __init__(self):
