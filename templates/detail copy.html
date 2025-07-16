@@ -1,0 +1,322 @@
+<!-- {% extends "base.html" %}
+
+{% block title %}{% if anime and 'data' in anime %}{{ anime['data'][0].get('judul', 'Anime Detail') }}{% else %}Anime Detail{% endif %} - AnimeStream{% endblock %}
+
+{% block content %}
+{% if anime and 'data' in anime and anime['data'] %}
+{% set anime_data = anime['data'][0] %}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-gray-800 rounded-2xl overflow-hidden mb-8">
+        <div class="md:flex">
+            <div class="md:w-1/3 lg:w-1/4">
+                <div class="aspect-[3/4] bg-gray-700 relative">
+                    {% if anime_data.get('cover') %}
+                    <img src="{{ anime_data.get('cover') }}" 
+                         alt="{{ anime_data.get('judul', 'Anime') }}"
+                         class="w-full h-full object-cover"
+                         loading="lazy">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center">
+                        <i class="fas fa-image text-6xl text-gray-600"></i>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="md:w-2/3 lg:w-3/4 p-6 md:p-8">
+                <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
+                    {{ anime_data.get('judul', 'Untitled') }}
+                </h1>
+                
+                {% if anime_data.get('sinopsis') %}
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-2">
+                        <i class="fas fa-align-left mr-2"></i>
+                        Sinopsis
+                    </h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        {{ anime_data.get('sinopsis') }}
+                    </p>
+                </div>
+                {% endif %}
+                
+                <div class="grid md:grid-cols-2 gap-4 mb-6">
+                    {% if anime_data.get('status') %}
+                    <div class="flex items-center">
+                        <i class="fas fa-circle text-green-500 mr-3"></i>
+                        <span class="text-gray-400">Status:</span>
+                        <span class="ml-2 font-semibold">{{ anime_data['status'] }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if anime_data.get('type') %}
+                    <div class="flex items-center">
+                        <i class="fas fa-tv mr-3"></i>
+                        <span class="text-gray-400">Type:</span>
+                        <span class="ml-2 font-semibold">{{ anime_data['type'] }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if anime_data.get('rating') %}
+                    <div class="flex items-center">
+                        <i class="fas fa-star text-yellow-500 mr-3"></i>
+                        <span class="text-gray-400">Score:</span>
+                        <span class="ml-2 font-semibold">{{ anime_data['rating'] }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if anime_data.get('published') %}
+                    <div class="flex items-center">
+                        <i class="fas fa-calendar mr-3"></i>
+                        <span class="text-gray-400">Release:</span>
+                        <span class="ml-2 font-semibold">{{ anime_data['published'] }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                {% if anime_data.get('genre') %}
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3">
+                        <i class="fas fa-tags mr-2"></i>
+                        Genre
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        {% for genre in anime_data['genre'] %}
+                        <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
+                            {{ genre }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if anime_data.get('chapter') %}
+    <div class="bg-gray-800 rounded-2xl p-6 mb-8">
+        <h2 class="text-2xl font-bold mb-6">
+            <i class="fas fa-list mr-2"></i>
+            Daftar Episode
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for episode in anime_data['chapter'] %}
+            <div class="bg-gray-700 rounded-lg p-4 hover:bg-gray-600 transition-colors">
+                <a href="{{ url_for('watch_anime', episode_url=episode.get('url', '')) }}" class="block">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <i class="fas fa-play-circle text-blue-500 mr-3"></i>
+                            <div>
+                                <h3 class="font-semibold">{{ episode.get('ch', 'Episode') }}</h3>
+                                {% if episode.get('date') %}
+                                <p class="text-gray-400 text-sm">{{ episode['date'] }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="text-center">
+        <a href="{{ url_for('index') }}" class="inline-flex items-center bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Kembali ke Beranda
+        </a>
+    </div>
+</div>
+
+{% else %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center">
+        <i class="fas fa-exclamation-triangle text-6xl text-yellow-500 mb-4"></i>
+        <h2 class="text-3xl font-bold mb-4">Anime Tidak Ditemukan</h2>
+        <p class="text-gray-400 mb-8">
+            {% if anime and 'error' in anime %}
+            {{ anime['error'] }}
+            {% else %}
+            Terjadi kesalahan saat mengambil detail anime
+            {% endif %}
+        </p>
+        <div class="space-x-4">
+            <a href="{{ url_for('index') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                <i class="fas fa-home mr-2"></i>
+                Kembali ke Beranda
+            </a>
+            <button onclick="location.reload()" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                <i class="fas fa-refresh mr-2"></i>
+                Coba Lagi
+            </button>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %} -->
+
+
+{% extends "base.html" %}
+
+{% block title %}{% if anime and 'judul' in anime %}{{ anime.get('judul', 'Anime Detail') }}{% else %}Anime Detail{% endif %} - AnimeStream{% endblock %}
+
+{% block content %}
+{% if anime and 'data' in anime and anime['data'] %}
+{% set anime_data = anime['data'][0] %}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="bg-gray-800 rounded-2xl overflow-hidden mb-8">
+        <div class="md:flex">
+            <div class="md:w-1/3 lg:w-1/4">
+                <div class="aspect-[3/4] bg-gray-700 relative">
+                    {% if anime_data.get('cover') %}
+                    <img src="{{ anime_data.get('cover') }}" 
+                         alt="{{ anime_data.get('judul', 'Anime') }}"
+                         class="w-full h-full object-cover"
+                         loading="lazy">
+                    {% else %}
+                    <div class="w-full h-full flex items-center justify-center">
+                        <i class="fas fa-image text-6xl text-gray-600"></i>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="md:w-2/3 lg:w-3/4 p-6 md:p-8">
+                <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
+                    {{ anime_data.get('judul', 'Untitled') }}
+                </h1>
+                
+                {% if anime_data.get('sinopsis') %}
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-2">
+                        <i class="fas fa-align-left mr-2"></i>
+                        Sinopsis
+                    </h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        {{ anime_data.get('sinopsis') }}
+                    </p>
+                </div>
+                {% endif %}
+                
+                <div class="grid md:grid-cols-2 gap-4 mb-6">
+                    {% if anime_data.get('status') %}
+                    <div class="flex items-center">
+                        <i class="fas fa-circle text-green-500 mr-3"></i>
+                        <span class="text-gray-400">Status:</span>
+                        <span class="ml-2 font-semibold">{{ anime_data['status'] }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if anime_data.get('type') %}
+                    <div class="flex items-center">
+                        <i class="fas fa-tv mr-3"></i>
+                        <span class="text-gray-400">Type:</span>
+                        <span class="ml-2 font-semibold">{{ anime_data['type'] }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if anime_data.get('rating') %}
+                    <div class="flex items-center">
+                        <i class="fas fa-star text-yellow-500 mr-3"></i>
+                        <span class="text-gray-400">Score:</span>
+                        <span class="ml-2 font-semibold">{{ anime_data['rating'] }}</span>
+                    </div>
+                    {% endif %}
+                    
+                    {% if anime_data.get('published') %}
+                    <div class="flex items-center">
+                        <i class="fas fa-calendar mr-3"></i>
+                        <span class="text-gray-400">Release:</span>
+                        <span class="ml-2 font-semibold">{{ anime_data['published'] }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                {% if anime_data.get('genre') %}
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3">
+                        <i class="fas fa-tags mr-2"></i>
+                        Genre
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        {% for genre in anime_data['genre'] %}
+                        <span class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
+                            {{ genre }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if anime_data.get('chapter') %}
+    <div class="bg-gray-800 rounded-2xl p-6 mb-8">
+        <h2 class="text-2xl font-bold mb-6">
+            <i class="fas fa-list mr-2"></i>
+            Daftar Episode
+        </h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {% for episode in anime_data['chapter'] %}
+            <div class="bg-gray-700 rounded-lg p-4 hover:bg-gray-600 transition-colors">
+                <a href="{{ url_for('watch_anime', episode_url=episode.get('url', '')) }}" class="block">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <i class="fas fa-play-circle text-blue-500 mr-3"></i>
+                            <div>
+                                <h3 class="font-semibold">{{ episode.get('ch', 'Episode') }}</h3>
+                                {% if episode.get('date') %}
+                                <p class="text-gray-400 text-sm">{{ episode['date'] }}</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="text-center">
+        <a href="{{ url_for('index') }}" class="inline-flex items-center bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Kembali ke Beranda
+        </a>
+    </div>
+</div>
+
+{% else %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center">
+        <i class="fas fa-exclamation-triangle text-6xl text-yellow-500 mb-4"></i>
+        <h2 class="text-3xl font-bold mb-4">Anime Tidak Ditemukan</h2>
+        <p class="text-gray-400 mb-8">
+            {% if anime and 'error' in anime %}
+            {{ anime['error'] }}
+            {% else %}
+            Terjadi kesalahan saat mengambil detail anime
+            {% endif %}
+        </p>
+        <div class="space-x-4">
+            <a href="{{ url_for('index') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                <i class="fas fa-home mr-2"></i>
+                Kembali ke Beranda
+            </a>
+            <button onclick="location.reload()" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                <i class="fas fa-refresh mr-2"></i>
+                Coba Lagi
+            </button>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,387 @@
+{% extends "base.html" %}
+
+{% block title %}{% if stream_data %}Nonton {{ stream_data.get('title', 'Anime') }}{% else %}Nonton Anime{% endif %} - AnimeStream{% endblock %}
+
+{% block content %}
+{% if stream_data %}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <nav class="mobile-breadcrumb mb-6">
+        <ol class="flex items-center space-x-2 text-sm text-gray-400">
+            <li>
+                <a href="{{ url_for('index') }}" class="hover:text-white transition-colors">
+                    <i class="fas fa-home mr-1"></i>
+                    <span class="hidden sm:inline">Beranda</span>
+                    <span class="sm:hidden">Home</span>
+                </a>
+            </li>
+            <li>
+                <i class="fas fa-chevron-right mx-2"></i>
+            </li>
+            <li>
+                <button onclick="goBack()" class="hover:text-white transition-colors">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    <span class="hidden sm:inline">Detail Anime</span>
+                    <span class="sm:hidden">Detail</span>
+                </button>
+            </li>
+            <li>
+                <i class="fas fa-chevron-right mx-2"></i>
+            </li>
+            <li class="text-white font-semibold">
+                <i class="fas fa-play mr-1"></i>
+                Episode
+            </li>
+        </ol>
+    </nav>
+
+    <div class="mobile-video-container bg-gray-800 rounded-2xl overflow-hidden mb-8">
+        <div class="aspect-video bg-black relative" id="player-container">
+            {% if stream_data['download_links'] %}
+            <video id="video-player" 
+                   class="w-full h-full" 
+                   controls 
+                   preload="metadata"
+                   poster="{{ stream_data.get('image', '') }}"
+                   oncontextmenu="return false;">
+                {% for stream in stream_data['download_links'] %}
+                    {% if stream['reso'] == 'Unknown' %}
+                        <source src="{{ stream['file_url'] }}" type="video/mp4" label="Default">
+                    {% elif stream['reso'] == selected_reso %}
+                        <source src="{{ stream.get('pixeldrain', '') }}" type="video/mp4" label="{{ stream.get('reso', 'Default') }}">
+                    {% endif %}
+                {% endfor %}
+                <p class="text-white text-center p-8">
+                    Browser Anda tidak mendukung video player. 
+                    <a href="{{ stream_data['download_links'][0].get('pixeldrain', '') }}" class="text-blue-400 hover:text-blue-300">
+                        Klik di sini untuk mendownload
+                    </a>
+                </p>
+            </video>
+            
+            <div id="video-loading" class="absolute inset-0 bg-black/80 flex items-center justify-center">
+                <div class="text-center">
+                    <div class="loading w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+                    <p class="text-white">Memuat video...</p>
+                </div>
+            </div>
+            
+            {% else %}
+            <div class="flex items-center justify-center h-full">
+                <div class="text-center">
+                    <i class="fas fa-exclamation-triangle text-6xl text-yellow-500 mb-4"></i>
+                    <h3 class="text-2xl font-bold mb-2">Video Tidak Tersedia</h3>
+                    <p class="text-gray-400">Maaf, video untuk episode ini tidak tersedia saat ini</p>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="bg-gray-800 rounded-2xl p-6 mb-8">
+        <h3 class="text-xl font-bold mb-4">
+            <i class="fas fa-info-circle mr-2"></i>
+            Informasi Episode
+        </h3>
+        
+        <div class="responsive-grid md:grid-cols-2">
+            <div class="space-y-0 md:space-y-4">
+                {% if stream_data.get('title') %}
+                <div class="info-card">
+                    <h4 class="info-label">Judul:</h4>
+                    <p class="info-value">{{ stream_data['title'] }}</p>
+                </div>
+                {% endif %}
+                
+                {% if stream_data.get('info') %}
+                <div class="info-card">
+                    <h4 class="info-label">Tipe:</h4>
+                    <p class="info-value">{{ stream_data['info']['tipe'] }}</p>
+                </div>
+                {% endif %}
+
+                {% if stream_data.get('status') %}
+                <div class="info-card">
+                    <h4 class="info-label">Status:</h4>
+                    <span class="badge-status">{{ stream_data['status'] }}</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="space-y-0 md:space-y-4">
+                {% if stream_data.get('release_time') %}
+                <div class="info-card">
+                    <h4 class="info-label">Rilis Pada:</h4>
+                    <p class="info-value">{{ stream_data['release_time'] }}</p>
+                </div>
+                {% endif %}
+                
+                {% if stream_data.get('info') %}
+                <div class="info-card">
+                    <h4 class="info-label">Durasi:</h4>
+                    <p class="info-value">{{ stream_data['info']['duration'] }}</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    {% if stream_data['download_links'] %}
+    <div class="bg-gray-800 rounded-2xl p-6 mb-8">
+        <h3 class="text-xl font-bold mb-4">
+            <i class="fas fa-cog mr-2"></i>
+            Pilih Kualitas
+        </h3>
+        <div class="mobile-quality-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {% for reso in stream_data['download_links'] %}
+                {% if reso['reso'] == 'Unknown' %}
+                    <a href="#"
+                    class="mobile-quality-btn bg-gray-700 hover:bg-gray-600 text-white px-4 py-3 rounded-lg font-semibold transition-colors quality-btn block text-center {% if reso['reso'] == selected_reso %}ring-2 ring-white{% endif %}">
+                        <i class="fas fa-video mr-2"></i>
+                        {{ reso['reso'] }}
+                    </a>
+                {% else %}
+                    <a href="{{ url_for('watch_anime', episode_url=episode_url) }}?reso={{ reso['reso'] }}"
+                    class="mobile-quality-btn bg-gray-700 hover:bg-gray-600 text-white px-4 py-3 rounded-lg font-semibold transition-colors quality-btn block text-center {% if reso['reso'] == selected_reso %}ring-2 ring-white{% endif %}">
+                        <i class="fas fa-video mr-2"></i>
+                        {{ reso['reso'] }}
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if stream_data['episodes'] %}
+    <div class="bg-gray-800 rounded-2xl p-6 mb-8">
+        <h3 class="text-xl font-bold mb-4">
+            <i class="fas fa-list mr-2"></i>
+            Daftar Episode
+        </h3>
+        <div class="mobile-episode-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {% for episode in stream_data['episodes'] %}
+            <a href="{{ url_for('watch_anime', episode_url=episode['slug']) }}"
+            class="mobile-episode-btn bg-gray-700 hover:bg-gray-600 text-white px-4 py-3 rounded-lg font-semibold transition-colors quality-btn block text-center {% if episode['slug'] == episode_url %}ring-2 ring-white{% endif %}">
+                <span>
+                    <i class="fas fa-video mr-2"></i>
+                    {{ episode['title'] }}
+                </span>
+                <i class="fas fa-chevron-right text-gray-400"></i>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if stream_data['download_links'] %}
+    <div class="bg-gray-800 rounded-2xl p-6 mb-8">
+        <h3 class="text-xl font-bold mb-4">
+            <i class="fas fa-list mr-2"></i>
+            Daftar Unduhan
+        </h3>
+        <div class="mobile-download-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {% for unduh in stream_data['download_links'] %}
+                {% if unduh['reso'] == 'Unknown' %}
+                    <a href="#"
+                    class="mobile-quality-btn bg-gray-700 hover:bg-gray-600 text-white px-4 py-3 rounded-lg font-semibold transition-colors quality-btn block text-center">
+                        <i class="fas fa-download mr-2"></i>
+                        {{ unduh['reso'] }}
+                    </a>
+                {% else %}
+                <a href="{{ unduh['gofile'] }}" target="_blank"
+                    class="mobile-quality-btn bg-gray-700 hover:bg-gray-600 text-white px-4 py-3 rounded-lg font-semibold transition-colors quality-btn block text-center">
+                        <i class="fas fa-download mr-2"></i>
+                        {{ unduh['reso'] }}
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="text-center space-x-4 flex justify-center">
+        <button onclick="goBack()" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+            <i class="fas fa-arrow-left mr-2"></i>
+            Kembali
+        </button>
+        
+        <a href="{{ url_for('index') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+            <i class="fas fa-home mr-2"></i>
+            Beranda
+        </a>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const video = document.getElementById('video-player');
+    const loading = document.getElementById('video-loading');
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    const volumeBtn = document.getElementById('volume-btn');
+    const volumeSlider = document.getElementById('volume-slider');
+    const qualitySelector = document.getElementById('quality-selector');
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    
+    if (!video) return;
+    
+    video.addEventListener('loadeddata', function() {
+        loading.style.display = 'none';
+    });
+    
+    video.addEventListener('error', function() {
+        loading.innerHTML = '<div class="text-center"><i class="fas fa-exclamation-triangle text-6xl text-red-500 mb-4"></i><p class="text-white">Gagal memuat video</p></div>';
+    });
+    
+    if (playPauseBtn) {
+        playPauseBtn.addEventListener('click', function() {
+            if (video.paused) {
+                video.play();
+                playPauseBtn.innerHTML = '<i class="fas fa-pause text-2xl"></i>';
+            } else {
+                video.pause();
+                playPauseBtn.innerHTML = '<i class="fas fa-play text-2xl"></i>';
+            }
+        });
+    }
+    
+    if (volumeSlider) {
+        volumeSlider.addEventListener('input', function() {
+            video.volume = this.value;
+            updateVolumeIcon();
+        });
+    }
+    
+    if (volumeBtn) {
+        volumeBtn.addEventListener('click', function() {
+            video.muted = !video.muted;
+            updateVolumeIcon();
+        });
+    }
+    
+    function updateVolumeIcon() {
+        if (!volumeBtn) return;
+        
+        if (video.muted || video.volume === 0) {
+            volumeBtn.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        } else if (video.volume < 0.5) {
+            volumeBtn.innerHTML = '<i class="fas fa-volume-down"></i>';
+        } else {
+            volumeBtn.innerHTML = '<i class="fas fa-volume-up"></i>';
+        }
+    }
+    
+    if (qualitySelector) {
+        qualitySelector.addEventListener('change', function() {
+            const currentTime = video.currentTime;
+            const wasPlaying = !video.paused;
+            
+            video.src = this.value;
+            video.load();
+            
+            video.addEventListener('loadedmetadata', function() {
+                video.currentTime = currentTime;
+                if (wasPlaying) {
+                    video.play();
+                }
+            }, { once: true });
+        });
+    }
+    
+    if (fullscreenBtn) {
+        fullscreenBtn.addEventListener('click', function() {
+            if (video.requestFullscreen) {
+                video.requestFullscreen();
+            } else if (video.webkitRequestFullscreen) {
+                video.webkitRequestFullscreen();
+            } else if (video.msRequestFullscreen) {
+                video.msRequestFullscreen();
+            }
+        });
+    }
+    
+    document.addEventListener('keydown', function(e) {
+        if (e.target.tagName.toLowerCase() === 'input') return;
+        
+        switch(e.key) {
+            case ' ':
+                e.preventDefault();
+                if (video.paused) {
+                    video.play();
+                } else {
+                    video.pause();
+                }
+                break;
+            case 'f':
+            case 'F':
+                e.preventDefault();
+                if (fullscreenBtn) fullscreenBtn.click();
+                break;
+            case 'm':
+            case 'M':
+                e.preventDefault();
+                if (volumeBtn) volumeBtn.click();
+                break;
+        }
+    });
+});
+
+function goBack() {
+    const loadingOverlay = document.getElementById('loading-overlay');
+    if (loadingOverlay) {
+        loadingOverlay.classList.add('hidden');
+    }
+    
+    history.back();
+}
+
+function changeQuality(url) {
+    const video = document.getElementById('video-player');
+    const currentTime = video.currentTime;
+    const wasPlaying = !video.paused;
+    
+    video.src = url;
+    video.load();
+    
+    video.addEventListener('loadedmetadata', function() {
+        video.currentTime = currentTime;
+        if (wasPlaying) {
+            video.play();
+        }
+    }, { once: true });
+    
+    document.querySelectorAll('.quality-btn').forEach(btn => {
+        btn.classList.remove('bg-blue-600');
+        btn.classList.add('bg-gray-700');
+    });
+    
+    event.target.classList.remove('bg-gray-700');
+    event.target.classList.add('bg-blue-600');
+}
+</script>
+
+{% else %}
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="text-center">
+        <i class="fas fa-exclamation-triangle text-6xl text-red-500 mb-4"></i>
+        <h2 class="text-3xl font-bold mb-4">Episode Tidak Ditemukan</h2>
+        <p class="text-gray-400 mb-8">
+            {% if stream_data and 'error' in stream_data %}
+            {{ stream_data['error'] }}
+            {% else %}
+            Terjadi kesalahan saat mengambil data episode
+            {% endif %}
+        </p>
+        <div class="space-x-4">
+            <button onclick="goBack()" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Kembali
+            </button>
+            <button onclick="location.reload()" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
+                <i class="fas fa-refresh mr-2"></i>
+                Coba Lagi
+            </button>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

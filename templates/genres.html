@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Genre Anime - AnimeStream{% endblock %}
+
+{% block content %}
+<section class="py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold mb-4">
+                <i class="fas fa-tags text-purple-500 mr-3"></i>
+                Genre Anime
+            </h1>
+            <p class="text-gray-400 text-lg">
+                Temukan anime berdasarkan genre favorit Anda
+            </p>
+        </div>
+
+        {% if genres %}
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+            {% for genre in genres %}
+            <a href="{{ url_for('genre_detail', genre_url=genre.get('url', '')) }}" 
+               class="genre-card bg-gradient-to-br from-gray-800 to-gray-900 rounded-lg p-6 hover:from-blue-600 hover:to-purple-600 transition-all duration-300 transform hover:scale-105 text-center group">
+                <div class="mb-4">
+                    {% set genre_name = genre.get('name', '').lower() %}
+                    {% if 'action' in genre_name %}
+                        <i class="fas fa-fist-raised text-3xl text-red-500 group-hover:text-white"></i>
+                    {% elif 'romance' in genre_name %}
+                        <i class="fas fa-heart text-3xl text-pink-500 group-hover:text-white"></i>
+                    {% elif 'comedy' in genre_name %}
+                        <i class="fas fa-laugh text-3xl text-yellow-500 group-hover:text-white"></i>
+                    {% elif 'drama' in genre_name %}
+                        <i class="fas fa-theater-masks text-3xl text-purple-500 group-hover:text-white"></i>
+                    {% elif 'fantasy' in genre_name %}
+                        <i class="fas fa-magic text-3xl text-blue-500 group-hover:text-white"></i>
+                    {% elif 'sci-fi' in genre_name or 'science' in genre_name %}
+                        <i class="fas fa-rocket text-3xl text-cyan-500 group-hover:text-white"></i>
+                    {% elif 'horror' in genre_name %}
+                        <i class="fas fa-ghost text-3xl text-red-600 group-hover:text-white"></i>
+                    {% elif 'sport' in genre_name %}
+                        <i class="fas fa-running text-3xl text-green-500 group-hover:text-white"></i>
+                    {% elif 'music' in genre_name %}
+                        <i class="fas fa-music text-3xl text-pink-400 group-hover:text-white"></i>
+                    {% elif 'school' in genre_name %}
+                        <i class="fas fa-graduation-cap text-3xl text-indigo-500 group-hover:text-white"></i>
+                    {% elif 'slice of life' in genre_name %}
+                        <i class="fas fa-coffee text-3xl text-orange-500 group-hover:text-white"></i>
+                    {% elif 'supernatural' in genre_name %}
+                        <i class="fas fa-eye text-3xl text-purple-600 group-hover:text-white"></i>
+                    {% elif 'thriller' in genre_name %}
+                        <i class="fas fa-bolt text-3xl text-yellow-600 group-hover:text-white"></i>
+                    {% elif 'mystery' in genre_name %}
+                        <i class="fas fa-search text-3xl text-gray-400 group-hover:text-white"></i>
+                    {% elif 'adventure' in genre_name %}
+                        <i class="fas fa-compass text-3xl text-emerald-500 group-hover:text-white"></i>
+                    {% else %}
+                        <i class="fas fa-play-circle text-3xl text-blue-500 group-hover:text-white"></i>
+                    {% endif %}
+                </div>
+                
+                <h3 class="font-semibold text-lg mb-2 group-hover:text-white">
+                    {{ genre.get('name', 'Unknown Genre') }}
+                </h3>
+                
+                {% if genre.get('count') %}
+                <p class="text-gray-400 text-sm group-hover:text-white/80">
+                    {{ genre.get('count') }} anime
+                </p>
+                {% endif %}
+            </a>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <div class="text-center py-16">
+            <i class="fas fa-exclamation-triangle text-6xl text-yellow-500 mb-4"></i>
+            <h3 class="text-2xl font-bold mb-2">Tidak dapat memuat genre anime</h3>
+            <p class="text-gray-400 mb-4">Terjadi kesalahan saat mengambil data genre anime</p>
+            <button onclick="location.reload()" class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-semibold transition-colors">
+                <i class="fas fa-refresh mr-2"></i>
+                Coba Lagi
+            </button>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<section class="bg-gray-800 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-8">
+            <h2 class="text-2xl font-bold mb-4">Genre Populer</h2>
+            <p class="text-gray-400">
+                Genre anime yang paling banyak dicari dan ditonton
+            </p>
+        </div>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="text-center">
+                <div class="bg-red-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-fist-raised text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Action</h3>
+                <p class="text-gray-400 text-sm">Pertarungan epic dan adegan aksi mendebarkan</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="bg-pink-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-heart text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Romance</h3>
+                <p class="text-gray-400 text-sm">Kisah cinta yang mengharukan dan romantis</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="bg-blue-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-magic text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Fantasy</h3>
+                <p class="text-gray-400 text-sm">Dunia magis dengan kekuatan supernatural</p>
+            </div>
+            
+            <div class="text-center">
+                <div class="bg-yellow-600 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-laugh text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold mb-2">Comedy</h3>
+                <p class="text-gray-400 text-sm">Humor segar yang menghibur dan lucu</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

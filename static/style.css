@@ -1,0 +1,363 @@
+/* Additional custom styles for AnimeStream */
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1f2937;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+}
+
+/* Video player enhancements */
+video {
+    outline: none;
+}
+
+video:focus {
+    outline: none;
+}
+
+/* Loading animation */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Smooth transitions */
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+/* Text truncation */
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Card shadow effects */
+.card-shadow {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.card-shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive video container */
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+}
+
+.video-container video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Custom range slider */
+input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    background: #4b5563;
+    outline: none;
+    border-radius: 2px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #3b82f6;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: #3b82f6;
+    cursor: pointer;
+    border-radius: 50%;
+    border: none;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .mobile-hidden {
+        display: none;
+    }
+    
+    .mobile-full {
+        width: 100%;
+    }
+    
+    .mobile-center {
+        text-align: center;
+    }
+    
+    /* Episode info grid mobile optimization */
+    .episode-info-grid {
+        display: block !important;
+        gap: 0 !important;
+    }
+    
+    .episode-info-item {
+        background: rgba(55, 65, 81, 0.5);
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 12px;
+        border-left: 3px solid #3b82f6;
+    }
+    
+    .episode-info-item h4 {
+        font-size: 0.875rem;
+        margin-bottom: 4px;
+        color: #9ca3af;
+    }
+    
+    .episode-info-item p,
+    .episode-info-item span {
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+    
+    /* Mobile breadcrumb */
+    .mobile-breadcrumb {
+        font-size: 0.8rem;
+        padding: 8px 0;
+    }
+    
+    .mobile-breadcrumb i {
+        font-size: 0.7rem;
+    }
+    
+    /* Mobile episode header */
+    .episode-header-mobile h1 {
+        font-size: 1.25rem !important;
+        line-height: 1.3;
+        margin-bottom: 8px;
+    }
+    
+    .episode-header-mobile .info-tags {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .episode-header-mobile .info-tag {
+        font-size: 0.8rem;
+        padding: 4px 8px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    /* Mobile video player controls */
+    .mobile-video-container {
+        margin-bottom: 16px;
+    }
+    
+    /* Mobile quality selection */
+    .mobile-quality-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px;
+    }
+    
+    .mobile-quality-btn {
+        padding: 8px 12px;
+        font-size: 0.8rem;
+        text-align: center;
+    }
+    
+    /* Mobile episode list */
+    .mobile-episode-grid {
+        grid-template-columns: 1fr !important;
+        gap: 8px;
+    }
+    
+    .mobile-episode-btn {
+        padding: 12px;
+        font-size: 0.85rem;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    /* Mobile download links */
+    .mobile-download-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px;
+    }
+    
+    /* Mobile navigation buttons */
+    .mobile-nav-buttons {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .mobile-nav-buttons a,
+    .mobile-nav-buttons button {
+        width: 100%;
+        text-align: center;
+        padding: 12px 24px;
+        font-size: 0.9rem;
+    }
+    
+    /* Mobile synopsis */
+    .mobile-synopsis {
+        font-size: 0.85rem;
+        line-height: 1.5;
+        background: rgba(55, 65, 81, 0.3);
+        padding: 12px;
+        border-radius: 8px;
+        margin-top: 12px;
+    }
+    
+    /* Mobile genre tags */
+    .mobile-genre-container {
+        margin-top: 12px;
+    }
+    
+    .mobile-genre-tags {
+        gap: 6px;
+    }
+    
+    .mobile-genre-tag {
+        font-size: 0.75rem;
+        padding: 4px 8px;
+    }
+}
+
+/* Small mobile optimizations (phones) */
+@media (max-width: 480px) {
+    .episode-info-item {
+        padding: 10px;
+        margin-bottom: 10px;
+        border-left-width: 2px;
+    }
+    
+    .episode-info-item h4 {
+        font-size: 0.8rem;
+        margin-bottom: 3px;
+    }
+    
+    .episode-info-item p,
+    .episode-info-item span {
+        font-size: 0.85rem;
+    }
+    
+    .episode-header-mobile h1 {
+        font-size: 1.1rem !important;
+        margin-bottom: 6px;
+    }
+    
+    .episode-header-mobile .info-tag {
+        font-size: 0.75rem;
+        padding: 3px 6px;
+    }
+    
+    .mobile-quality-grid,
+    .mobile-download-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    .mobile-quality-btn {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+    }
+    
+    .mobile-nav-buttons a,
+    .mobile-nav-buttons button {
+        padding: 14px 20px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .no-print {
+        display: none;
+    }
+}
+
+/* Utility classes for mobile responsiveness */
+.info-card {
+    background: rgba(55, 65, 81, 0.5);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-left: 3px solid #3b82f6;
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    background: rgba(55, 65, 81, 0.7);
+    transform: translateY(-1px);
+}
+
+.info-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #9ca3af;
+    margin-bottom: 4px;
+}
+
+.info-value {
+    color: #ffffff;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.badge-status {
+    background: #059669;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.responsive-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .responsive-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+    
+    .info-card {
+        margin-bottom: 8px;
+    }
+}
