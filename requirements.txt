@@ -1,9 +1,0 @@
-Flask
-requests
-Werkzeug
-Jinja2
-MarkupSafe
-itsdangerous
-click
-blinker
-gunicorn
